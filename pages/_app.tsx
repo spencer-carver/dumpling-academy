@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import Link from "../components/Link";
 import { darkTheme, defaultTheme, lightTheme, styled } from "../styles/stitches";
 
 const Header = styled("header", {
@@ -60,7 +60,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <main className={ theme }>
                 <Header>
-                    <Link href="/" style={{ textDecoration: "none" }}>Dumpling<Emoji> 🥟 </Emoji>Academy</Link>
+                    <Link href="/">Dumpling<Emoji> 🥟 </Emoji>Academy</Link>
                 </Header>
                 <Component theme={ theme } setLoading={ setLoading } { ...pageProps } />
                 <Footer>

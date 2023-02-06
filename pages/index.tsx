@@ -3,6 +3,7 @@ import { CSS } from "@stitches/react";
 import Head from "next/head";
 import { FunctionComponent, useEffect, useState } from "react";
 import { PageProps } from "../@types/global";
+import Link from "../components/Link";
 
 const NAME = "Dumpling Academy";
 const DESCRIPTION = "A culinary journey coming soon...";
@@ -39,16 +40,6 @@ const Digit = styled("td", {
         width: "200px",
         fontSize: "72px"
     }
-});
-
-const Link = styled("a", {
-    textDecoration: "none",
-    "&:visited": {
-        color: "$onBackground"
-    },
-    "&:hover": {
-        color: "$onSurface"
-    },
 });
 
 const LIVE_TALK_TIME = new Date(2023, 1, 17, 14, 0, 0).getTime();
