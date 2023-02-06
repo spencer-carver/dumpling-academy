@@ -1,0 +1,16 @@
+{
+    "extends": "next/core-web-vitals",
+    "rules": {
+        "quotes": ["error", "double"],
+        "react/jsx-curly-spacing": [
+            2,
+            {
+                "when": "always",
+                "spacing": {
+                    "objectLiterals": "never"
+                }
+            }
+        ],
+        "template-curly-spacing": ["error", "always"]
+    }
+}
