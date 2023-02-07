@@ -1,5 +1,6 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "../components/Link";
 import { darkTheme, defaultTheme, lightTheme, styled } from "../styles/stitches";
@@ -13,6 +14,10 @@ const Header = styled("header", {
     [`.${ darkTheme } &`]: {
         color: "$onBackground"
     }
+});
+
+const LogoSpan = styled("span", {
+    pointerEvents: "none"
 });
 
 const Emoji = styled("span", {
@@ -32,6 +37,22 @@ const Footer = styled("footer", {
 const CopyrightNotice = styled ("p", {
     display: "inline-block"
 });
+
+const SiteLogo = () => {
+    const router = useRouter();
+
+    const logo = <LogoSpan>Dumpling<Emoji> 🥟 </Emoji>Academy</LogoSpan>;
+
+    if (router.asPath === "/") {
+        return <Header>{ logo }</Header>;
+    }
+
+    return (
+        <Header>
+            <Link href="/">{ logo }</Link>
+        </Header>
+    );
+};
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const [theme, setTheme] = useState(defaultTheme);
@@ -59,9 +80,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
             </Head>
             <main className={ theme }>
-                <Header>
-                    <Link href="/">Dumpling<Emoji> 🥟 </Emoji>Academy</Link>
-                </Header>
+                <SiteLogo />
                 <Component theme={ theme } setLoading={ setLoading } { ...pageProps } />
                 <Footer>
                     <CopyrightNotice>&#169; { (new Date()).getFullYear() } Spencer Carver</CopyrightNotice>
