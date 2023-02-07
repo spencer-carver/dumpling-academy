@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { CSS } from "@stitches/react";
 import { styled } from "../../styles/stitches";
 
 const Anchor = styled("a", {
@@ -12,6 +13,6 @@ const Anchor = styled("a", {
     },
 });
 
-const Link = ({ href, children }: { href: string; children: ReactNode }) => (<Anchor href={ href }>{ children }</Anchor>);
+const Link = ({ href, css = {}, children }: { href: string; css?: CSS; children: ReactNode }) => (<Anchor href={ href } css={ css }>{ children }</Anchor>);
 
 export default Link;

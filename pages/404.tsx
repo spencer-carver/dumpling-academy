@@ -53,7 +53,7 @@ const ErrorMessageHeading = styled("h2", {
     padding: "0px"
 });
 
-export default function Custom404({ title: errorMessage = "Not Found", statusCode = 404, backLink = "/" }) {
+export default function Custom404({ title: errorMessage = "Not Found", statusCode = 404 }) {
     return (
         <>
             <Head>

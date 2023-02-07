@@ -70,7 +70,7 @@ export const globalStyles = globalCss({
         }
     },
     "a:visited": {
-        color: "$onSurface",
+        color: "$onBackground",
         textDecoration: "none"
     },
     "main": {
