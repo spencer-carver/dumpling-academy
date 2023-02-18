@@ -47,12 +47,15 @@ const Digit = styled("td", {
 });
 
 interface Event {
-    event: "LIVE_COUNTDOWN" | "LIVE_TALK" | "POST_LIVE" | "VIRTUAL_COUNTDOWN" | "VIRTUAL_TALK" | "POST_VIRTUAL" | "AFTERWARDS";
+    event: "BEGINNING" | "LIVE_COUNTDOWN" | "LIVE_TALK" | "POST_LIVE" | "VIRTUAL_COUNTDOWN" | "VIRTUAL_TALK" | "POST_VIRTUAL" | "AFTERWARDS";
     link: string;
     endTime?: number;
 }
 
 const EVENT_TIMELINE: Event[] = [{
+    event: "BEGINNING",
+    link: "https://developerweek2023.sched.com/event/1GOAm",
+},{
     event: "LIVE_COUNTDOWN",
     link: "https://developerweek2023.sched.com/event/1GOAm",
     endTime: 1676671200000 // 2/17/2023 @ 2:00pm PST
@@ -135,10 +138,9 @@ const PageContent = () => {
         function tick() {
             const now = new Date().getTime();
 
-            if (now > EVENT_TIMELINE[currentEventIndex].endTime) {
-                setCurrentEventIndex(currentEventIndex + 1);
-            }
+            const pastEvents = EVENT_TIMELINE.filter(({ endTime }) => now > endTime);
 
+            setCurrentEventIndex(pastEvents.length + 1);
             setCurrentTime(now);
         }
 
@@ -148,6 +150,10 @@ const PageContent = () => {
     }, [currentEventIndex]);
 
     const currentEvent = EVENT_TIMELINE[currentEventIndex];
+
+    if (currentEvent.event === "BEGINNING") {
+        return null;
+    }
 
     if (currentEvent.event.includes("COUNTDOWN")) {
         return (
@@ -162,7 +168,7 @@ const PageContent = () => {
     if (currentEvent.event.includes("TALK")) {
         return (
             <CenteredDiv>
-                The talk is live! <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>go watch it</Link>.
+                The talk is live! <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>Watch it</Link>.
             </CenteredDiv>
         );
     }
@@ -172,6 +178,10 @@ const PageContent = () => {
             <CenteredDiv>
                 { "This talk has concluded, as a token of appreciation for attending, please claim this " }
                 <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>promotional access to bloomberg.com</Link>.
+                <br />
+                <br />
+                { "Slides for this presentation are available " }
+                <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
             </CenteredDiv>
         );
     }
@@ -181,6 +191,10 @@ const PageContent = () => {
         <CenteredDiv>
             { "All talks are over, but you can find more details " }
             <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>here</Link>.
+            <br />
+            <br />
+            { "Slides for this presentation are available " }
+            <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
         </CenteredDiv>
     );
 };
