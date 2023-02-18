@@ -19,7 +19,7 @@ const PageDiv = styled("div", {
 const CenteredDiv = styled("div", {
     display: "inline-block",
     margin: "0 auto",
-    marginTop: "calc(50vh - 113px)",
+    marginTop: "calc(50vh - 133px)",
 });
 
 const Table = styled("table", {
@@ -130,7 +130,7 @@ const CountdownTimer = ({ targetEvent, currentTime }: { targetEvent: Event; curr
     );
 };
 
-const PageContent = () => {
+const CounterAndMessaging = () => {
     const [ currentEventIndex, setCurrentEventIndex ] = useState(0);
     const [ currentTime, setCurrentTime ] = useState(null);
 
@@ -157,45 +157,38 @@ const PageContent = () => {
 
     if (currentEvent.event.includes("COUNTDOWN")) {
         return (
-            <CenteredDiv>
+            <>
+                { `Countdown to the ${ currentEvent.event.includes("VIRTUAL") ? "virtual" : "live" } talk:` }
                 <Link href={ currentEvent.link }>
                     <CountdownTimer targetEvent={ currentEvent } currentTime={ currentTime } />
                 </Link>
-            </CenteredDiv>
+            </>
         );
     }
 
     if (currentEvent.event.includes("TALK")) {
         return (
-            <CenteredDiv>
+            <>
                 The talk is live! <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>Watch it</Link>.
-            </CenteredDiv>
+            </>
         );
     }
 
     if (currentEvent.event.includes("POST")) {
         return (
-            <CenteredDiv>
-                { "This talk has concluded, as a token of appreciation for attending, please claim this " }
+            <>
+                { `The ${ currentEvent.event.includes("VIRTUAL") ? "virtual" : "live" } talk has concluded, as a token of appreciation for attending, please claim this ` }
                 <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>promotional access to bloomberg.com</Link>.
-                <br />
-                <br />
-                { "Slides for this presentation are available " }
-                <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
-            </CenteredDiv>
+            </>
         );
     }
 
 
     return (
-        <CenteredDiv>
+        <>
             { "All talks are over, but you can find more details " }
             <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>here</Link>.
-            <br />
-            <br />
-            { "Slides for this presentation are available " }
-            <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
-        </CenteredDiv>
+        </>
     );
 };
 
@@ -217,7 +210,13 @@ const Homepage: FunctionComponent<PageProps & { lastUpdate: number; }> = ({ them
                 <meta name="twitter:image" content={ `${ process.env.NEXT_PUBLIC_SITE_URL }/seo.jpg` } />
             </Head>
             <PageDiv>
-                <PageContent />
+                <CenteredDiv>
+                    <CounterAndMessaging />
+                    <br />
+                    <br />
+                    { "Slides for this presentation are available " }
+                    <Link href="/developerweek-2023/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
+                </CenteredDiv>
             </PageDiv>
         </>
     );
