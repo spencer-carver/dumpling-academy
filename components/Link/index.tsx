@@ -5,9 +5,6 @@ import { styled } from "../../styles/stitches";
 const Anchor = styled("a", {
     color: "$onBackground",
     textDecoration: "none",
-    "&:visited": {
-        color: "$onBackground"
-    },
     "&:hover": {
         color: "$onSurface"
     },

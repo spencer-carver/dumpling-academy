@@ -21,25 +21,25 @@ export interface Recipe {
 
 const ContentDiv = styled("div", {
     margin: "0 auto",
-    padding: "10px 0",
+    padding: "0",
     maxWidth: "800px",
-    minHeight: "calc(100vh - 146px)",
     textAlign: "left",
     "@lg": {
-        paddingTop: "30px"
+        padding: "30px 0 20px"
     }
 });
 
 const MenuDiv = styled("div", {
     padding: "20px 60px",
-    minHeight: "400px",
-    color: "black",
+    minHeight: "calc(100vh - 196px)",
+    backgroundColor: "$surface",
+    color: "$onSurface",
+    borderTop: "1px solid $onBackground",
+    borderBottom: "1px solid $onBackground",
     "@lg": {
-        minHeight: "600px",
         border: "1px solid $onBackground",
         boxShadow: "5px 5px 5px $onBackground",
-        padding: "20px 100px",
-        backgroundColor: "white",
+        padding: "20px 100px"
     }
 });
 
@@ -47,17 +47,16 @@ const Heading = styled("h2", {
     textAlign: "center"
 });
 
-const SectionHeading = styled("h2", {
-    textAlign: "left",
-    marginLeft: "-40px"
-});
-
 const linkStyles: CSS = {
     color: "$onSurface",
     textDecoration: "none",
     paddingBottom: "1px",
-    borderBottom: "1px dotted $primary",
-    textTransform: "capitalize"
+    borderBottom: "1px dotted $secondary",
+    textTransform: "capitalize",
+    "&:hover": {
+        backgroundColor: "$secondary",
+        color: "$onSecondary"
+    }
 };
 
 function formatName(name: string): string {
@@ -66,22 +65,24 @@ function formatName(name: string): string {
 
 const FilterTag = styled("div", {
     display: "inline-block",
-    backgroundColor: "$surface",
+    backgroundColor: "$surfaceAccent",
     padding: "5px",
     borderRadius: "5px",
     margin: "3px",
     textTransform: "capitalize",
     "&:hover": {
-        backgroundColor: "$surface",
+        backgroundColor: "$secondary",
+        color: "$onSecondary",
         cursor: "pointer"
     }
 });
 
 const filterSelectedStyle: CSS = {
-    backgroundColor: "$secondary",
-    color: "$onSecondary",
+    backgroundColor: "$primary",
+    color: "$onPrimary",
     "&:hover": {
-        backgroundColor: "$secondary",
+        backgroundColor: "$primary",
+        color: "$onPrimary",
         cursor: "pointer"
     }
 };
@@ -146,7 +147,6 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
             <ContentDiv>
                 <MenuDiv>
                     <Heading>Recipes</Heading>
-                    <SectionHeading>Dishes { posts.length > 0 && `(${ posts.length })` }</SectionHeading>
                     <div style={{ paddingBottom: "15px" }}>
                         { Object.keys(tags).sort().map((tag, index) => (
                             <FilterTag key={ index } onClick={ () => handleTagClick(tag) } css={ filterTags[tag] ? filterSelectedStyle : {} }>

@@ -1,16 +1,23 @@
 import React from "react";
 import Head from "next/head";
 import { lightTheme, styled } from "../styles/stitches";
+import { CSS } from "@stitches/react";
 
 const ErrorDiv = styled("div", {
     display: "flex",
-    height: "calc(100vh - 103px)",
+    height: "calc(100vh - 106px)",
     backgroundColor: "$background",
     color: "$onBackground",
     alignItems: "center",
     justifyContent: "center",
     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', 'Fira Sans', Avenir, 'Helvetica Neue', 'Lucida Grande', sans-serif"
 });
+
+const nestedErrorStyles: CSS = {
+    height: "100%",
+    paddingTop: "calc(50vh - 60px)",
+    backgroundColor: "transparent"
+};
 
 const SadFaceSpan = styled("span", {
     position: "absolute",
@@ -53,14 +60,16 @@ const ErrorMessageHeading = styled("h2", {
     padding: "0px"
 });
 
-export default function Custom404({ title: errorMessage = "Not Found", statusCode = 404 }) {
+export default function Custom404({ title: errorMessage = "Not Found", statusCode = 404, nestedError = false }) {
     return (
         <>
             <Head>
                 <title>{ statusCode } - { errorMessage }</title>
             </Head>
-            <ErrorDiv>
-                <SadFaceSpan>:(</SadFaceSpan>
+            <ErrorDiv css={ nestedError ? nestedErrorStyles : {} }>
+                <SadFaceSpan>
+                    :(
+                </SadFaceSpan>
                 <ErrorCodeHeading>{ statusCode }</ErrorCodeHeading>
                 <MessageWrapperDiv>
                     <ErrorMessageHeading>{ errorMessage }</ErrorMessageHeading>

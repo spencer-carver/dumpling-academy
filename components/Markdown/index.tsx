@@ -58,7 +58,8 @@ const LinkTag = styled("a", {
     textDecoration: "none",
     borderBottom: "2px dotted $secondary",
     "&:hover": {
-        backgroundColor: "$secondary"
+        backgroundColor: "$secondary",
+        color: "$onSecondary"
     }
 });
 
@@ -71,7 +72,7 @@ const BlogLink = (props): ReactElement => {
 };
 
 const Pre = styled("pre", {
-    backgroundColor: "$surface02",
+    backgroundColor: "$surfaceAccent",
     padding: "10px",
     fontSize: "12px",
     overflowX: "auto",
@@ -83,14 +84,8 @@ const Pre = styled("pre", {
     }
 });
 
-const Code = styled("code", {
-    backgroundColor: "$surface04",
-    padding: "0 2px",
-    borderRadius: "4px"
-});
-
 const BlockQuote = styled("blockquote", {
-    borderLeft: "5px solid $surface04",
+    borderLeft: "5px solid $surfaceAccent",
     paddingLeft: "20px",
     marginLeft: "0px"
 });
@@ -108,7 +103,6 @@ const components = {
     td: TableCell as unknown as TableDataCellComponent,
     a: BlogLink as unknown as NormalComponents["a"],
     pre: Pre as unknown as NormalComponents["pre"],
-    code: Code as unknown as NormalComponents["code"],
     blockquote: BlockQuote as unknown as NormalComponents["blockquote"],
     img: Image as unknown as NormalComponents["img"]
 };

@@ -12,29 +12,27 @@ import ErrorPage from "../../404";
 import { styled } from "../../../styles/stitches";
 import MarkdownComponents from "../../../components/Markdown";
 import { Recipe } from "..";
+import { CSS } from "@stitches/react";
 
 function formatName(name: string): string {
     return name.replace(/-/g, " ");
 }
 
 const PageDiv = styled("div", {
-    padding: "0 20px",
     position: "relative",
-    backgroundColor: "$background",
-    minHeight: "calc(100vh - 146px)",
-    color: "$onBackground",
-    "& sup span a": {
-        borderBottom: "none"
-    },
+    minHeight: "calc(100vh - 148px)",
+    padding: "20px 60px",
+    backgroundColor: "$surface",
+    color: "$onSurface",
+    borderTop: "1px solid $onBackground",
+    borderBottom: "1px solid $onBackground",
     "@lg": {
-        margin: "20px auto",
-        border: "1px solid $surface04",
+        margin: "0px auto 20px",
         maxWidth: "690px",
-        fontSize: "18px"
-    },
-    "@xxl": {
-        margin: "20px auto",
-        maxWidth: "1024px"
+        minHeight: "calc(100vh - 168px)",
+        border: "1px solid $onBackground",
+        boxShadow: "5px 5px 5px $onBackground",
+        padding: "20px 100px"
     }
 });
 
@@ -197,40 +195,39 @@ const SmartH4 = ({ children }) => {
     );
 };
 
-const Li = styled("li", {
+const Li = styled("li", {});
+
+const orderedListStyles: CSS = {
     "&:hover": {
-        backgroundColor: "$secondary",
-        color: "$onSecondary",
+        backgroundColor: "$primary",
+        color: "$onPrimary",
         cursor: "pointer",
         "&::marker": {
             color: "$onBackground"
         }
     }
-});
+};
 
-const SmartListItem = ({ index, children }) => {
+const SmartListItem = ({ index, ordered, children }) => {
     const [isDone, setIsDone] = useState(false);
-    const { ingredientSet, onHoverStep, onLeaveStep } = useRecipe();
+    const { onHoverStep, onLeaveStep } = useRecipe();
 
     if (!children || !children[0]) {
         return;
     }
 
     const instruction = children[0] as string;
-    const ingredients = [];
 
-    ingredientSet.forEach((ingredient) => {
-        if (instruction.toLowerCase().includes(ingredient)) {
-            ingredients.push(ingredient);
-        }
-    });
+    if (!ordered) {
+        return <Li>{ instruction }</Li>;
+    }
 
     return (
         <Li data-index={ index + 1 }
             onMouseEnter={ onHoverStep }
             onMouseLeave={ onLeaveStep }
             onClick={ () => setIsDone(v => !v) }
-            css={ isDone ? { textDecoration: "line-through" } : {} }
+            css={ isDone ? { textDecoration: "line-through", cursor: "pointer" } : orderedListStyles }
         >
             { instruction }
         </Li>
@@ -262,8 +259,8 @@ const ResetScaleFactor = styled("span", {
     padding: "2px",
     border: "1px solid transparent",
     borderRadius: "5px",
-    backgroundColor: "$secondary",
-    color: "$onSecondary",
+    backgroundColor: "$primary",
+    color: "$onPrimary",
     zIndex: "2",
     "&:hover": {
         cursor: "pointer"
@@ -337,11 +334,11 @@ const Recipe: FunctionComponent<PageProps> = ({ setLoading }) => {
 
         elements.forEach((element: HTMLTableCellElement | HTMLSpanElement) => {
             if (element.tagName === "TD") {
-                element.parentElement.style.backgroundColor = "var(--colors-secondary)";
-                element.parentElement.style.color = "var(--colors-onSecondary)";
+                element.parentElement.style.backgroundColor = "var(--colors-primary)";
+                element.parentElement.style.color = "var(--colors-onPrimary)";
             } else {
-                element.style.backgroundColor = "var(--colors-secondary)";
-                element.style.color = "var(--colors-onSecondary)";
+                element.style.backgroundColor = "var(--colors-primary)";
+                element.style.color = "var(--colors-onPrimary)";
             }
         });
     }, [metadata]);
@@ -369,17 +366,17 @@ const Recipe: FunctionComponent<PageProps> = ({ setLoading }) => {
     }, [metadata]);
 
     if (!loaded) {
-        return null;
+        return <PageDiv />;
     }
 
     if (loaded && !recipe.content) {
-        return <ErrorPage title="Recipe not found" statusCode={ 404 } />;
+        return <PageDiv><ErrorPage title="Recipe not found" statusCode={ 404 } nestedError={ true } /></PageDiv>;
     }
 
     const publishDate = new Date(recipe.createdTime).toDateString();
     const modifyDate = new Date(recipe.modifiedTime).toDateString();
 
-    const TITLE = formatName(recipe.name);
+    const TITLE = formatName(recipe.name).split(" ").map(word => `${ word.charAt(0).toUpperCase() }${ word.slice(1) }`).join(" ");
     const DESCRIPTION = `A recipe by ${ recipe.author }`;
 
     // eslint-disable-next-line react/no-children-prop
