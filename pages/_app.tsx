@@ -4,13 +4,15 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "../components/Link";
 import { darkTheme, defaultTheme, lightTheme, styled } from "../styles/stitches";
+import { CSS } from "@stitches/react";
 
 const Header = styled("header", {
     fontFamily: "Lobster",
     fontSize: "32px",
     padding: "3px 0 10px",
     width: "100%",
-    textAlign: "center",
+    display: "flex",
+    justifyContent: "space-around",
     [`.${ darkTheme } &`]: {
         color: "$onBackground"
     }
@@ -38,6 +40,14 @@ const CopyrightNotice = styled ("p", {
     display: "inline-block"
 });
 
+const backStyles: CSS = {
+    textDecoration: "none",
+    color: "$onBackground",
+    "&:hover": {
+        textDecoration: "none"
+    }
+};
+
 const SiteLogo = () => {
     const router = useRouter();
 
@@ -47,9 +57,14 @@ const SiteLogo = () => {
         return <Header>{ logo }</Header>;
     }
 
+    const pathParts = router.asPath.split("/");
+    pathParts.pop();
+
     return (
         <Header>
+            <Link href={ pathParts.join("/") || "/" } css={ backStyles }>&#10094;</Link>
             <Link href="/">{ logo }</Link>
+            <span />
         </Header>
     );
 };

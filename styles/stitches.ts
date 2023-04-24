@@ -28,7 +28,11 @@ export const darkTheme = createTheme({
         onBackground: "#F7E2A5",
         onSurface: "#E9DEBF",
         onError: "#000000",
-        border: "#121212"
+        border: "#121212",
+        primary: "#BB86FC",
+        primaryVariant: "#3700B3",
+        secondary: "#9ACD32",
+        secondaryVariant: "#9ACD32"
     },
     radii: {
         borderRadius: "20px"
@@ -47,7 +51,11 @@ export const lightTheme = createTheme({
         onBackground: "#000000",
         onSurface: "#34260C",
         onError: "#FFFFFF",
-        border: "#000000"
+        border: "#000000",
+        primary: "#BB86FC",
+        primaryVariant: "#3700B3",
+        secondary: "#9ACD32",
+        secondaryVariant: "#9ACD32"
     },
     radii: {
         borderRadius: "20px"
