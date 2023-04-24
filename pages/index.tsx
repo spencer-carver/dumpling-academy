@@ -1,8 +1,10 @@
-import { styled } from "../styles/stitches";
+import { lightTheme, styled } from "../styles/stitches";
 import Head from "next/head";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent } from "react";
 import { PageProps } from "../@types/global";
 import Link from "../components/Link";
+import Logo from "../components/Logo";
+import Image from "../components/Image";
 
 const NAME = "Dumpling Academy";
 const DESCRIPTION = "A culinary journey coming soon...";
@@ -12,194 +14,54 @@ const PageDiv = styled("div", {
     margin: "0 auto",
     padding: "10px 20px 0",
     color: "$onBackground",
-    height: "calc(100vh - 113px)",
+    minHeight: "calc(100vh - 113px)",
     textAlign: "center"
 });
 
 const CenteredDiv = styled("div", {
-    display: "inline-block",
-    margin: "0 auto",
-    marginTop: "calc(50vh - 113px)",
-});
-
-const Table = styled("table", {
-    tableLayout: "fixed"
-});
-
-const Heading = styled("th", {
-    width: "70px",
-    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    minHeight: "calc(100vh - 113px)",
     "@lg": {
-        width: "200px"
+        flexDirection: "row"
     }
 });
 
-const Digit = styled("td", {
-    width: "70px",
-    textAlign: "center",
+const Separator = styled("span", {
+    display: "none",
+    "@lg": {
+        display: "initial",
+        height: "300px",
+        borderLeft: "1px solid $onBackground"
+    }
+});
+
+const Card = styled("div", {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: "$surface",
+    color: "$onSurface",
+    border: "1px solid $onBackground",
+    boxShadow: "5px 5px 5px $onBackground",
+    minHeight: "120px",
     fontFamily: "Lobster",
-    fontWeight: "bold",
-    fontSize: "36px",
-    "@lg": {
-        width: "200px",
-        fontSize: "72px"
+    fontSize: "24px",
+    width: "240px",
+    padding: "20px",
+    "&:hover": {
+        backgroundColor: "$surfaceAccent",
+        color: "$onSurfaceAccent"
     }
 });
-
-interface Event {
-    event: "BEGINNING" | "LIVE_COUNTDOWN" | "LIVE_TALK" | "POST_LIVE" | "VIRTUAL_COUNTDOWN" | "VIRTUAL_TALK" | "POST_VIRTUAL" | "AFTERWARDS";
-    link: string;
-    endTime?: number;
-}
-
-const EVENT_TIMELINE: Event[] = [{
-    event: "BEGINNING",
-    link: "https://developerweek2023.sched.com/event/1GOAm",
-},{
-    event: "LIVE_COUNTDOWN",
-    link: "https://developerweek2023.sched.com/event/1GOAm",
-    endTime: 1676671200000 // 2/17/2023 @ 2:00pm PST
-},{
-    event: "LIVE_TALK",
-    link: "https://developerweek2023.sched.com/event/1GOAm",
-    endTime: 1676672700000 // 2/17/2023 @ 2:25pm PST
-},{
-    event: "POST_LIVE",
-    link: "https://www.bloomberg.com/activate?code=p1XE2As7",
-    endTime: 1676782800000 // 2/19/2023 @ Midnight PST
-},{
-    event: "VIRTUAL_COUNTDOWN",
-    link: "https://developerweek2023.sched.com/event/1GOB4",
-    endTime: 1677189600000 // 2/23/2023 @ 2:00 PST
-},{
-    event: "VIRTUAL_TALK",
-    link: "https://developerweek2023.sched.com/event/1GOB4",
-    endTime: 1677191100000 // 2/23/2023 @ 2:25 PST
-},{
-    event: "POST_VIRTUAL",
-    link: "https://www.bloomberg.com/activate?code=p1XE2As7",
-    endTime: 1677312000000 // 2/25/2023 @ Midnight PST
-},{
-    event: "AFTERWARDS",
-    link: "https://github.com/spencer-carver/dumpling-academy"
-}];
-
-function leftPad(value: number): string {
-    if (value < 10) {
-        return `0${ value }`;
-    }
-
-    return value.toString();
-}
-
-const CountdownTimer = ({ targetEvent, currentTime }: { targetEvent: Event; currentTime: number }) => {
-    const timeRemaining = Math.max(targetEvent.endTime - currentTime, 0);
-    const seconds = leftPad(Math.floor(timeRemaining / 1000 % 60));
-    const minutes = leftPad(Math.floor(timeRemaining / 1000 / 60 % 60));
-    const hours = leftPad(Math.floor(timeRemaining / 1000 / 60 / 60 % 24));
-    const days = leftPad(Math.floor(timeRemaining / 1000 / 60 / 60 / 24));
-
-    const TimeRow = currentTime
-        ? (<>
-            <Digit>{ days }</Digit>
-            <Digit>{ hours }</Digit>
-            <Digit>{ minutes }</Digit>
-            <Digit>{ seconds }</Digit>
-        </>)
-        : (<>
-            <Digit>--</Digit>
-            <Digit>--</Digit>
-            <Digit>--</Digit>
-            <Digit>--</Digit>
-        </>);
-
-    return (
-        <Table>
-            <tbody>
-                <tr>{ TimeRow }</tr>
-            </tbody>
-            <thead style={{ display: "table-row-group" }}>
-                <tr>
-                    <Heading>Days</Heading>
-                    <Heading>Hours</Heading>
-                    <Heading>Minutes</Heading>
-                    <Heading>Seconds</Heading>
-                </tr>
-            </thead>
-        </Table>
-    );
-};
-
-const PageContent = () => {
-    const [ currentEventIndex, setCurrentEventIndex ] = useState(0);
-    const [ currentTime, setCurrentTime ] = useState(null);
-
-    useEffect(() => {
-        function tick() {
-            const now = new Date().getTime();
-
-            const pastEvents = EVENT_TIMELINE.filter(({ endTime }) => now > endTime);
-
-            setCurrentEventIndex(pastEvents.length + 1);
-            setCurrentTime(now);
-        }
-
-        const timer = setInterval(tick, 1000);
-
-        return () => window.clearInterval(timer);
-    }, [currentEventIndex]);
-
-    const currentEvent = EVENT_TIMELINE[currentEventIndex];
-
-    if (currentEvent.event === "BEGINNING") {
-        return null;
-    }
-
-    if (currentEvent.event.includes("COUNTDOWN")) {
-        return (
-            <CenteredDiv>
-                <Link href={ currentEvent.link }>
-                    <CountdownTimer targetEvent={ currentEvent } currentTime={ currentTime } />
-                </Link>
-            </CenteredDiv>
-        );
-    }
-
-    if (currentEvent.event.includes("TALK")) {
-        return (
-            <CenteredDiv>
-                The talk is live! <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>Watch it</Link>.
-            </CenteredDiv>
-        );
-    }
-
-    if (currentEvent.event.includes("POST")) {
-        return (
-            <CenteredDiv>
-                { "This talk has concluded, as a token of appreciation for attending, please claim this " }
-                <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>promotional access to bloomberg.com</Link>.
-                <br />
-                <br />
-                { "Slides for this presentation are available " }
-                <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
-            </CenteredDiv>
-        );
-    }
-
-
-    return (
-        <CenteredDiv>
-            { "All talks are over, but you can find more details " }
-            <Link href={ currentEvent.link } css={{ textDecoration: "underline" }}>here</Link>.
-            <br />
-            <br />
-            { "Slides for this presentation are available " }
-            <Link href="/slides.pdf" css={{ textDecoration: "underline" }}>here</Link>.
-        </CenteredDiv>
-    );
-};
 
 const Homepage: FunctionComponent<PageProps & { lastUpdate: number; }> = ({ theme, lastUpdate }) => {
+    const developerWeekImage = theme === lightTheme
+        ? "/developerweek-2023/logo-dark.png"
+        : "/developerweek-2023/logo-light.png";
+
     return (
         <>
             <Head>
@@ -217,7 +79,21 @@ const Homepage: FunctionComponent<PageProps & { lastUpdate: number; }> = ({ them
                 <meta name="twitter:image" content={ `${ process.env.NEXT_PUBLIC_SITE_URL }/seo.jpg` } />
             </Head>
             <PageDiv>
-                <PageContent />
+                <CenteredDiv>
+                    <Link href="/recipes">
+                        <Card>
+                            Family Recipe Portal
+                        </Card>
+                    </Link>
+                    <Separator />
+                    <Link href="/developerweek-2023/slides.pdf">
+                        <Card>
+                            <Logo />
+                            ✕
+                            <Image src={ developerWeekImage } alt="DeveloperWeek logo" width={ 240 } height={ 38 } />
+                        </Card>
+                    </Link> 
+                </CenteredDiv>
             </PageDiv>
         </>
     );

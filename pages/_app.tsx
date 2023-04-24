@@ -1,27 +1,23 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "../components/Link";
 import { darkTheme, defaultTheme, lightTheme, styled } from "../styles/stitches";
+import { CSS } from "@stitches/react";
+import LoadingSpinner from "../components/Loading";
+import Logo from "../components/Logo";
 
 const Header = styled("header", {
     fontFamily: "Lobster",
     fontSize: "32px",
     padding: "3px 0 10px",
     width: "100%",
-    textAlign: "center",
+    display: "flex",
+    justifyContent: "space-around",
     [`.${ darkTheme } &`]: {
         color: "$onBackground"
     }
-});
-
-const LogoSpan = styled("span", {
-    pointerEvents: "none"
-});
-
-const Emoji = styled("span", {
-    fontSize: "12px"
 });
 
 const Footer = styled("footer", {
@@ -38,18 +34,29 @@ const CopyrightNotice = styled ("p", {
     display: "inline-block"
 });
 
+const backStyles: CSS = {
+    textDecoration: "none",
+    color: "$onBackground",
+    "&:hover": {
+        textDecoration: "none"
+    }
+};
+
 const SiteLogo = () => {
     const router = useRouter();
 
-    const logo = <LogoSpan>Dumpling<Emoji> 🥟 </Emoji>Academy</LogoSpan>;
-
     if (router.asPath === "/") {
-        return <Header>{ logo }</Header>;
+        return <Header><Logo /></Header>;
     }
+
+    const pathParts = router.asPath.split("/");
+    pathParts.pop();
 
     return (
         <Header>
-            <Link href="/">{ logo }</Link>
+            <Link href={ pathParts.join("/") || "/" } css={ backStyles }>&#10094;</Link>
+            <Link href="/"><Logo /></Link>
+            <span />
         </Header>
     );
 };
@@ -57,6 +64,7 @@ const SiteLogo = () => {
 export default function MyApp({ Component, pageProps }: AppProps) {
     const [theme, setTheme] = useState(defaultTheme);
     const [loading, setLoading] = useState(false);
+    const [stillLoading, setStillLoading] = useState(false);
 
     useEffect(() => {
         try {
@@ -74,6 +82,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }
     }, []);
 
+    const handleLoading = useCallback((isLoading) => {
+        setLoading((loading) => {
+            if (loading && !isLoading) {
+                setStillLoading(true);
+                setTimeout(() => {
+                    setLoading(false);
+                    setStillLoading(false);
+                }, 750);
+    
+                return loading;
+            }
+
+            return isLoading;
+        });
+    }, []);
+
     return (
         <>
             <Head>
@@ -81,7 +105,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <main className={ theme }>
                 <SiteLogo />
-                <Component theme={ theme } setLoading={ setLoading } { ...pageProps } />
+                <Component theme={ theme } setLoading={ handleLoading } { ...pageProps } />
+                { loading && <LoadingSpinner fadeOut={ stillLoading } /> }
                 <Footer>
                     <CopyrightNotice>&#169; { (new Date()).getFullYear() } Spencer Carver</CopyrightNotice>
                 </Footer>

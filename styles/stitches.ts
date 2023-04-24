@@ -24,9 +24,15 @@ export const darkTheme = createTheme({
     colors: {
         background: "#34260C",
         surface: "#2C2C2C",
+        surfaceAccent: "#565656",
+        primary: "#9ACD32",
+        secondary: "#BAC628",
         error: "#CF6679",
         onBackground: "#F7E2A5",
         onSurface: "#E9DEBF",
+        onSurfaceAccent: "#E9DEBF",
+        onPrimary: "#000000",
+        onSecondary: "#000000",
         onError: "#000000",
         border: "#121212"
     },
@@ -34,18 +40,24 @@ export const darkTheme = createTheme({
         borderRadius: "20px"
     },
     shadows: {
-        background: "#121212",
-        onBackground: "#FFFFFF"
+        background: "#34260C",
+        onBackground: "#F7E2A5"
     }
 });
 
 export const lightTheme = createTheme({
     colors: {
-        background: "#E9DEBF",
-        surface: "#F7E2A5",
+        background: "#E4D6A0",
+        surface: "#FFFFFF",
+        surfaceAccent: "#E4E4DC",
+        primary: "#9ACD32",
+        secondary: "#BAC628",
         error: "#B00020",
         onBackground: "#000000",
         onSurface: "#34260C",
+        onSurfaceAccent: "#34260C",
+        onPrimary: "#000000",
+        onSecondary: "#000000",
         onError: "#FFFFFF",
         border: "#000000"
     },
@@ -53,7 +65,7 @@ export const lightTheme = createTheme({
         borderRadius: "20px"
     },
     shadows: {
-        background: "#ffffff",
+        background: "#E4D6A0",
         onBackground: "#000000"
     }
 });
@@ -70,7 +82,6 @@ export const globalStyles = globalCss({
         }
     },
     "a:visited": {
-        color: "$onBackground",
         textDecoration: "none"
     },
     "main": {
