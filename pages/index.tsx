@@ -7,7 +7,7 @@ import Logo from "../components/Logo";
 import Image from "../components/Image";
 
 const NAME = "Dumpling Academy";
-const DESCRIPTION = "A culinary journey coming soon...";
+const DESCRIPTION = "A combination plate of reference recipes and technical talks!";
 
 const PageDiv = styled("div", {
     maxWidth: "1024px",
