@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "../../components/Link";
 import { styled } from "../../styles/stitches";
 import { API_URL } from "../../constants/ExternalUrls";
+import { SECRET } from "../../constants/secret";
 import fetchData from "../../utils/fetch";
 import { PageProps } from "../../@types/global";
 import { CSS } from "@stitches/react";
@@ -20,6 +21,7 @@ export interface Recipe {
 }
 
 const ContentDiv = styled("div", {
+    position: "relative",
     margin: "0 auto",
     padding: "0",
     maxWidth: "800px",
@@ -94,27 +96,63 @@ const RecipeTags = styled("span", {
     }
 });
 
+const ResetPrivateViewing = styled("span", {
+    position: "absolute",
+    float: "right",
+    top: "15px",
+    right: "10px",
+    padding: "2px",
+    border: "1px solid transparent",
+    borderRadius: "5px",
+    backgroundColor: "$primary",
+    color: "$onPrimary",
+    zIndex: "2",
+    "&:hover": {
+        cursor: "pointer"
+    },
+    "@lg": {
+        top: "40px"
+    }
+});
+
 const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
-    const [ posts, setPosts ] = useState([] as Recipe[]);
+    const [ recipes, setRecipes ] = useState([] as Recipe[]);
     const [ tags, setTags ] = useState<Record<string, number>>({});
     const [ filterTags, setFilterTags ] = useState<Record<string, boolean>>({});
+    const [ secretRemaining, setSecretRemaining ] = useState<string>(SECRET);
+    const [ canReadPrivateRecipes, setCanReadPrivateRecipes ] = useState<boolean>(false);
 
     useEffect(() => {
         setLoading(true);
         fetchData(`${ API_URL }/api/recipes`).then((data) => {
-            const postList = (data as unknown as Recipe[]).sort((a, b) => a.name.localeCompare(b.name));
+            const recipeList = (data as unknown as Recipe[]).sort((a, b) => a.name.localeCompare(b.name));
 
+            let canReadPrivateRecipes = false;
+
+            try {
+                canReadPrivateRecipes = localStorage.getItem("canReadPrivateRecipes") === "true";
+            } catch (error) {
+                // do nothing
+            }
+
+            const filteredRecipes = [];
             const tags = {};
 
-            postList.forEach(({ description }) => {
-                const candidateTags = description.toLowerCase().split(",");
+            recipeList.forEach((recipe) => {
+                const { description } = recipe;
+                const candidateTags = description.toLowerCase().split(",").map((tag) => tag.trim());
 
-                candidateTags.forEach((candidate) => tags[candidate.trim()] = (tags[candidate.trim()] || 0) + 1);
+                candidateTags.forEach((candidate) => tags[candidate] = (tags[candidate] || 0) + 1);
+
+                if (!candidateTags.includes("private") || canReadPrivateRecipes) {
+                    filteredRecipes.push(recipe);
+                }
             });
 
-            setPosts(postList);
+            setRecipes(filteredRecipes);
             setTags(tags);
             setLoading(false);
+            setCanReadPrivateRecipes(canReadPrivateRecipes);
         });
     }, [setLoading]);
 
@@ -124,9 +162,32 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
         } else {
             filterTags[tag] = true;
         }
+
+        if (secretRemaining.length && Object.keys(tags).sort().filter((tag) => tag !== "private").indexOf(tag) === parseInt(secretRemaining[0]) - 1) {
+            if (secretRemaining.length === 1) {
+                try {
+                    localStorage.setItem("canReadPrivateRecipes", "true");
+                } catch (error) {
+                    // do nothing
+                }
+                setCanReadPrivateRecipes(true);
+            }
+
+            setSecretRemaining((sr) => sr.substring(1));
+        }
         
         setFilterTags({ ...filterTags });
-    }, [filterTags]);
+    }, [secretRemaining, tags, filterTags]);
+
+    const hideSecret = useCallback(() => {
+        try {
+            localStorage.removeItem("canReadPrivateRecipes");
+        } catch (error) {
+            // do nothing
+        }
+        setCanReadPrivateRecipes(false);
+        setSecretRemaining(SECRET);
+    }, []);
 
     return (
         <>
@@ -147,14 +208,15 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
             <ContentDiv>
                 <MenuDiv>
                     <Heading>Recipes</Heading>
+                    { canReadPrivateRecipes && <ResetPrivateViewing onClick={ hideSecret }>hide private</ResetPrivateViewing>}
                     <div style={{ paddingBottom: "15px" }}>
-                        { Object.keys(tags).sort().map((tag, index) => (
+                        { Object.keys(tags).sort().filter((tag) => tag !== "private").map((tag, index) => (
                             <FilterTag key={ index } onClick={ () => handleTagClick(tag) } css={ filterTags[tag] ? filterSelectedStyle : {} }>
                                 { tag } ({ tags[tag] })
                             </FilterTag>
                         )) }
                     </div>
-                    { posts.map((post, index) => {
+                    { recipes.map((post, index) => {
                         let matchesFilter = true;
 
                         Object.keys(filterTags).map((tag) => {
