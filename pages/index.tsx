@@ -50,7 +50,7 @@ const Card = styled("div", {
     fontFamily: "Lobster",
     fontSize: "24px",
     width: "240px",
-    padding: "20px",
+    padding: "20px 20px 15px 20px",
     "&:hover": {
         backgroundColor: "$surfaceAccent",
         color: "$onSurfaceAccent"
@@ -90,7 +90,7 @@ const Homepage: FunctionComponent<PageProps & { lastUpdate: number; }> = ({ them
                         <Card>
                             <Logo />
                             ✕
-                            <Image src={ developerWeekImage } alt="DeveloperWeek logo" width={ 240 } height={ 38 } />
+                            <Image src={ developerWeekImage } alt="DeveloperWeek logo" width={ 240 } height={ 61 } />
                         </Card>
                     </Link> 
                 </CenteredDiv>
