@@ -142,9 +142,8 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
                 const { description } = recipe;
                 const candidateTags = description.toLowerCase().split(",").map((tag) => tag.trim());
 
-                candidateTags.forEach((candidate) => tags[candidate] = (tags[candidate] || 0) + 1);
-
                 if (!candidateTags.includes("private") || canReadPrivateRecipes) {
+                    candidateTags.forEach((candidate) => tags[candidate] = (tags[candidate] || 0) + 1);
                     filteredRecipes.push(recipe);
                 }
             });
@@ -171,6 +170,8 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
                     // do nothing
                 }
                 setCanReadPrivateRecipes(true);
+
+                window.location.reload();
             }
 
             setSecretRemaining((sr) => sr.substring(1));
@@ -187,6 +188,8 @@ const Recipes: FunctionComponent<PageProps> = ({ setLoading }) => {
         }
         setCanReadPrivateRecipes(false);
         setSecretRemaining(SECRET);
+
+        window.location.reload();
     }, []);
 
     return (

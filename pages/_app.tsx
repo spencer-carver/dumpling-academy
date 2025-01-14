@@ -108,7 +108,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <Component theme={ theme } setLoading={ handleLoading } { ...pageProps } />
                 { loading && <LoadingSpinner fadeOut={ stillLoading } /> }
                 <Footer>
-                    <CopyrightNotice>&#169; { (new Date()).getFullYear() } Spencer Carver</CopyrightNotice>
+                    <CopyrightNotice>&#169; 2023 - { (new Date()).getFullYear() } Spencer Carver</CopyrightNotice>
                 </Footer>
             </main>
         </>
